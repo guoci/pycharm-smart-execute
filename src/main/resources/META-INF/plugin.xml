@@ -1,0 +1,50 @@
+<!--
+    Errors on "PythonCore" and "Python" are shown because IntelliJ isn't smart enough to handle mark PythonCore as valid.
+    Also, references to the language Python are still marked as invalid, even though it's valid.
+-->
+
+<idea-plugin>
+    <id>python-smart-execute</id>
+    <name>Python Smart Execute</name>
+    <version>0.1.3</version>
+    <vendor email="zguoci@gmail.com" url="https://github.com/JetBrains/intellij-community/pull/711">Guo Ci Teo</vendor>
+
+    <description><![CDATA[
+        Automatically determines the number of lines to be sent to the Python console.
+
+        keyboard shortcut: <code>alt shift A</code>.
+
+        A plugin implementation of the following PyCharm <a href="https://github.com/JetBrains/intellij-community/pull/711">pull request</a>.
+    ]]></description>
+
+    <depends>com.intellij.modules.lang</depends>
+    <!-- Depend on the Python plugin. Also works in the different editions of PyCharm. -->
+    <depends>com.intellij.modules.python</depends>
+    <!--<depends>PythonCore</depends>-->
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="183.0"/>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!--
+            inspectionSuppressor is the extension point we're going to implement.
+            Uncomment the line below and implement the implementationClass.
+            There's a quick-fix on 'webinar.FlakeInspectionSuppressor' to quickly create the class.
+        -->
+        <!--<lang.inspectionSuppressor language="Python" implementationClass="webinar.FlakeInspectionSuppressor" />-->
+    </extensions>
+  <actions>
+    <action id="SmartExecuteInPyConsoleAction"
+      class="com.jetbrains.python.actions.PySmartExecuteSelectionAction"
+      text="Smart execute selection in console"
+      description="Smart executes selected code fragment in Python/Django console">
+      <add-to-group group-id="EditorPopupMenu" anchor="before" relative-to-action="ExecuteInPyConsoleAction"/>
+
+      <keyboard-shortcut keymap="$default" first-keystroke="alt shift A"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="control shift A" />
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="control shift A" />
+      <keyboard-shortcut keymap="Eclipse" first-keystroke="ctrl alt A" replace-all="true"/>
+      <keyboard-shortcut keymap="NetBeans 6.5" first-keystroke="ctrl alt A" replace-all="true"/>
+    </action>
+  </actions>
+</idea-plugin>
