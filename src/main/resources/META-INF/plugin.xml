@@ -6,11 +6,11 @@
 <idea-plugin>
     <id>python-smart-execute</id>
     <name>Python Smart Execute</name>
-    <version>0.1.3</version>
+    <version>0.1.4</version>
     <vendor email="zguoci@gmail.com" url="https://github.com/JetBrains/intellij-community/pull/711">Guo Ci Teo</vendor>
 
     <description><![CDATA[
-        Automatically determines the number of lines to be sent to the Python console.
+        Automatically determines the number of lines to be sent to the Python console. An alternative to “Execute Line in Console”.
 
         keyboard shortcut: <code>alt shift A</code>.
 

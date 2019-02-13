@@ -72,31 +72,37 @@ public class PySmartExecuteSelectionAction extends AnAction {
   private static void syntaxErrorAction(final AnActionEvent e) {
     PyExecuteSelectionAction.showConsoleAndExecuteCode(e, "# syntax error");
   }
-  static void moveCaretDown(Editor editor) {
-    VisualPosition pos = editor.getCaretModel().getVisualPosition();
-    Pair<LogicalPosition, LogicalPosition> lines = EditorUtil.calcSurroundingRange(editor, pos, pos);
-    int offset = editor.getCaretModel().getOffset();
+  static void moveCaretDown(final Editor editor, final int numLinesToSubmit) {
+    final LogicalPosition pos = editor.getCaretModel().getLogicalPosition();
+    editor.getCaretModel().moveToOffset(
+            editor.logicalPositionToOffset(
+                    new LogicalPosition(pos.line + numLinesToSubmit, pos.column)));
+    editor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
 
-    LogicalPosition lineStart = lines.first;
-    LogicalPosition nextLineStart = lines.second;
-
-    int start = editor.logicalPositionToOffset(lineStart);
-    int end = editor.logicalPositionToOffset(nextLineStart);
-
-    Document document = editor.getDocument();
-
-    if (nextLineStart.line < document.getLineCount()) {
-
-      int newOffset = end + offset - start;
-
-      int nextLineEndOffset = document.getLineEndOffset(nextLineStart.line);
-      if (newOffset >= nextLineEndOffset) {
-        newOffset = nextLineEndOffset;
-      }
-
-      editor.getCaretModel().moveToOffset(newOffset);
-      editor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
-    }
+//    VisualPosition pos = editor.getCaretModel().getVisualPosition();
+//    Pair<LogicalPosition, LogicalPosition> lines = EditorUtil.calcSurroundingRange(editor, pos, pos);
+//    int offset = editor.getCaretModel().getOffset();
+//
+//    LogicalPosition lineStart = lines.first;
+//    LogicalPosition nextLineStart = lines.second;
+//
+//    int start = editor.logicalPositionToOffset(lineStart);
+//    int end = editor.logicalPositionToOffset(nextLineStart);
+//
+//    Document document = editor.getDocument();
+//
+//    if (nextLineStart.line < document.getLineCount()) {
+//
+//      int newOffset = end + offset - start;
+//
+//      int nextLineEndOffset = document.getLineEndOffset(nextLineStart.line);
+//      if (newOffset >= nextLineEndOffset) {
+//        newOffset = nextLineEndOffset;
+//      }
+//
+//      editor.getCaretModel().moveToOffset(newOffset);
+//      editor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
+//    }
   }
   private static void smartExecuteCode(final AnActionEvent e, final Editor editor) {
     final Document document = editor.getDocument();
@@ -127,7 +133,7 @@ public class PySmartExecuteSelectionAction extends AnAction {
     }
     if (lastCommonParent == null) {
       if (psiElement instanceof PsiWhiteSpace) { // if we are at a blank line
-        moveCaretDown(editor);
+        moveCaretDown(editor, 1);
         return;
       }
       syntaxErrorAction(e);
@@ -147,15 +153,8 @@ public class PySmartExecuteSelectionAction extends AnAction {
       PyExecuteSelectionAction.showConsoleAndExecuteCode(e, codeToSend);
     }
     if (codeToSend != null) {
-//      for (int i = 0; i < numLinesToSubmit; ++i) {
-//        moveCaretDown(editor);
-//      }
-      final LogicalPosition pos = editor.getCaretModel().getLogicalPosition();
-      editor.getCaretModel().moveToOffset(
-          editor.logicalPositionToOffset(
-              new LogicalPosition(pos.line + numLinesToSubmit, pos.column)));
-    }
-    else {
+      moveCaretDown(editor, numLinesToSubmit);
+    } else {
       syntaxErrorAction(e);
       return;
     }
