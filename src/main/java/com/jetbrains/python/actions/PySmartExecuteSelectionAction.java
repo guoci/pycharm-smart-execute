@@ -110,10 +110,8 @@ public class PySmartExecuteSelectionAction extends AnAction {
     psiDocumentManager.commitDocument(document);
     final PsiFile psiFile = psiDocumentManager.getPsiFile(document);
 
-//    final VisualPosition caretPos = editor.getCaretModel().getVisualPosition();
-//    final int line = caretPos.getLine();
-    final LogicalPosition caretPos = editor.getCaretModel().getLogicalPosition();
-    final int line = caretPos.line;
+    final LogicalPosition logicalPos = editor.getCaretModel().getLogicalPosition();
+    final int line = logicalPos.line;
 
     final int offset = DocumentUtil.getFirstNonSpaceCharOffset(document, line);
     final PsiElement psiElement = psiFile.findElementAt(offset);
@@ -139,7 +137,13 @@ public class PySmartExecuteSelectionAction extends AnAction {
       syntaxErrorAction(e);
       return;
     }
-
+    { // if at folded code, submit folded code
+      final VisualPosition caretPos = editor.getCaretModel().getVisualPosition();
+      final int l1 = editor.visualToLogicalPosition(new VisualPosition(caretPos.getLine(), 0)).line;
+      final int l2 = editor.visualToLogicalPosition(new VisualPosition(caretPos.getLine() + 1, 0)).line;
+      if (l1 + 1 < l2)
+        numLinesToSubmit = l2 - l1;
+    }
     String codeToSend =
         numLinesToSubmit == 0 ? "" :
             getNLinesAfterCaret(editor, numLinesToSubmit - 1);
