@@ -122,7 +122,7 @@ public class PySmartExecuteSelectionAction extends AnAction {
     for (int i = 0; line + i < document.getLineCount(); ++i) {
       final int lineStartOffset = DocumentUtil.getFirstNonSpaceCharOffset(document, line + i);
       final PsiElement pe = psiFile.findElementAt(lineStartOffset);
-      final PsiElement commonParentRaw = pe == null ? pe.getContainingFile() : PsiTreeUtil.findCommonParent(psiElement, pe);
+      final PsiElement commonParentRaw = pe == null ? psiElement.getContainingFile() : PsiTreeUtil.findCommonParent(psiElement, pe);
       final PsiElement commonParent = getEvaluableParent(commonParentRaw);
       if (commonParent.getTextOffset() < offset ||
           commonParent instanceof PyFile) { // at new statement
