@@ -1,4 +1,3 @@
-// Copyright 2000-2018 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.jetbrains.python.actions;
 
 import com.intellij.openapi.actionSystem.*;
@@ -70,7 +69,7 @@ public class PySmartExecuteSelectionAction extends AnAction {
   }
 
   private static void syntaxErrorAction(final AnActionEvent e) {
-    PyExecuteSelectionAction.showConsoleAndExecuteCode(e, "# syntax error");
+    PyExecuteInConsole.executeCodeInConsole(e.getProject(), "# syntax error", null, true, true, false, null);
   }
   static void moveCaretDown(final Editor editor, final int numLinesToSubmit) {
     final LogicalPosition pos = editor.getCaretModel().getLogicalPosition();
@@ -156,7 +155,7 @@ public class PySmartExecuteSelectionAction extends AnAction {
     codeToSend = codeToSend == null ? null : codeToSend.trim();
 
     if (codeToSend != null && !codeToSend.isEmpty()) {
-      PyExecuteSelectionAction.showConsoleAndExecuteCode(e, codeToSend);
+      PyExecuteInConsole.executeCodeInConsole(e.getProject(), codeToSend, null, true, true, false, null);
     }
     if (codeToSend != null) {
       moveCaretDown(editor, numLinesToSubmit);
@@ -184,7 +183,7 @@ public class PySmartExecuteSelectionAction extends AnAction {
     if (editor != null) {
       final String selectionText = getSelectionText(editor);
       if (selectionText != null) {
-        PyExecuteSelectionAction.showConsoleAndExecuteCode(e, selectionText);
+        PyExecuteInConsole.executeCodeInConsole(e.getProject(), selectionText, null, true, true, false, null);
       }
       else {
         smartExecuteCode(e, editor);

@@ -6,7 +6,7 @@
 <idea-plugin>
     <id>python-smart-execute</id>
     <name>Python Smart Execute</name>
-    <version>0.1.6</version>
+    <version>0.1.7</version>
     <vendor email="zguoci@gmail.com" url="https://github.com/JetBrains/intellij-community/pull/711">Guo Ci Teo</vendor>
 
     <description><![CDATA[
@@ -15,6 +15,8 @@
         keyboard shortcut: <code>alt shift A</code>.
 
         A plugin implementation of the following PyCharm <a href="https://github.com/JetBrains/intellij-community/pull/711">pull request</a>.
+
+        JetBrains feature request: <a href="https://youtrack.jetbrains.com/issue/PY-38919">https://youtrack.jetbrains.com/issue/PY-38919</a>.
     ]]></description>
 
     <depends>com.intellij.modules.lang</depends>
