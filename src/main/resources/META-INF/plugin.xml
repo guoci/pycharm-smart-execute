@@ -6,7 +6,7 @@
 <idea-plugin>
     <id>python-smart-execute</id>
     <name>Python Smart Execute</name>
-    <version>0.1.7</version>
+    <version>0.1.8</version>
     <vendor email="zguoci@gmail.com" url="https://github.com/JetBrains/intellij-community/pull/711">Guo Ci Teo</vendor>
 
     <description><![CDATA[
@@ -25,7 +25,7 @@
     <!--<depends>PythonCore</depends>-->
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="183.0"/>
+    <idea-version since-build="212.0"/>
 
     <extensions defaultExtensionNs="com.intellij">
         <!--
