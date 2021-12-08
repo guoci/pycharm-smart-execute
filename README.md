@@ -1,5 +1,5 @@
 # Python Smart Execute
-Python Smart Execute is a PyCharm plugin for an alternative to “Execute Line in Console”.
+Python Smart Execute is a PyCharm [plugin](https://plugins.jetbrains.com/plugin/11945-python-smart-execute) for an alternative to “Execute Line in Console”.
 
 It automatically determines the number of lines to be sent to the Python console.
 
