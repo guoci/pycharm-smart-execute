@@ -9,6 +9,7 @@ import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.editor.ex.util.EditorUtil;
 import com.intellij.openapi.util.Pair;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -122,6 +123,10 @@ public class PySmartExecuteSelectionAction extends AnAction {
       if (psiElement == null)  // at last line
         return;
       final PsiElement commonParentRaw = pe == null ? psiElement.getContainingFile() : PsiTreeUtil.findCommonParent(psiElement, pe);
+      if (commonParentRaw instanceof PsiDirectory) {// last line of notebook cell
+        numLinesToSubmit = i - 1;
+        break;
+      }
       final PsiElement commonParent = getEvaluableParent(commonParentRaw);
       if (commonParent.getTextOffset() < offset ||
           commonParent instanceof PyFile) { // at new statement
