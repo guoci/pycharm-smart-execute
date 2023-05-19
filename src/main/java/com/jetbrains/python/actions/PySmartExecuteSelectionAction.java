@@ -124,7 +124,7 @@ public class PySmartExecuteSelectionAction extends AnAction {
         return;
       final PsiElement commonParentRaw = pe == null ? psiElement.getContainingFile() : PsiTreeUtil.findCommonParent(psiElement, pe);
       if (commonParentRaw instanceof PsiDirectory) {// last line of notebook cell
-        numLinesToSubmit = i - 1;
+        numLinesToSubmit = i;
         break;
       }
       final PsiElement commonParent = getEvaluableParent(commonParentRaw);
