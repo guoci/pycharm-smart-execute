@@ -42,48 +42,44 @@ public class PyCellExecuteAction extends AnAction {
     final int line = logicalPos.line;
 
     int start = 6666, end = 6666;
-    for (int i = 0; i > -666; --i) {
+    for (int i = 0; ; --i) {
       final int cline = line + i;
-      int offset = 666;
-      boolean outOfDoc = false;
+      int offset;
       try {
         offset = DocumentUtil.getFirstNonSpaceCharOffset(document, cline);
         start = offset;
       } catch (IndexOutOfBoundsException ex) {
-        outOfDoc = true;
+        break;
       }
-      PsiElement psiElement = null;
-      if (!outOfDoc) {
-        psiElement = psiFile.findElementAt(offset);
-        if (outOfDoc || !(psiElement.getNode().getElementType() instanceof PyElementType)) {
-          break;
-        }
-      }
+      final PsiElement psiElement = psiFile.findElementAt(offset);
+      final var elementType = psiElement.getNode().getElementType();
 //      System.out.println("i = " + i);
 //      System.out.println("cline = " + cline);
 //      System.out.println("psiElement = " + psiElement);
+//      System.out.println("psiElement.getNode() = " + psiElement.getNode());
+//      System.out.println("elementType = " + elementType);
+      if (!((elementType instanceof PyElementType) || (psiElement.getNode() instanceof PsiWhiteSpace)))
+        break;
     }
 //    System.out.println("forward");
-    for (int i = 0; i < 666; ++i) {
+    for (int i = 0; ; ++i) {
       final int cline = line + i;
-      int offset = 666;
-      boolean outOfDoc = false;
+      int offset;
       try {
         offset = DocumentUtil.getFirstNonSpaceCharOffset(document, cline);
         end = offset;
       } catch (IndexOutOfBoundsException ex) {
-        outOfDoc = true;
+        break;
       }
-      PsiElement psiElement = null;
-      if (!outOfDoc) {
-        psiElement = psiFile.findElementAt(offset);
-        if (outOfDoc || !(psiElement.getNode().getElementType() instanceof PyElementType)) {
-          break;
-        }
-      }
+      final PsiElement psiElement = psiFile.findElementAt(offset);
+      final var elementType = psiElement.getNode().getElementType();
 //      System.out.println("i = " + i);
 //      System.out.println("cline = " + cline);
 //      System.out.println("psiElement = " + psiElement);
+//      System.out.println("psiElement.getNode() = " + psiElement.getNode());
+//      System.out.println("elementType = " + elementType);
+      if (!((elementType instanceof PyElementType) || (psiElement.getNode() instanceof PsiWhiteSpace)))
+        break;
     }
     {
       start = DocumentUtil.getLineEndOffset(start, document);
