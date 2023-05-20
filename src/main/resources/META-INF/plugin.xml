@@ -6,7 +6,7 @@
 <idea-plugin>
     <id>python-smart-execute</id>
     <name>Python Smart Execute</name>
-    <version>0.1.10</version>
+    <version>0.1.11</version>
     <vendor email="zguoci@gmail.com" url="https://github.com/JetBrains/intellij-community/pull/711">Guo Ci Teo</vendor>
 
     <description><![CDATA[
@@ -17,6 +17,10 @@
         A plugin implementation of the following PyCharm <a href="https://github.com/JetBrains/intellij-community/pull/711">pull request</a>.
 
         JetBrains feature request: <a href="https://youtrack.jetbrains.com/issue/PY-38919">https://youtrack.jetbrains.com/issue/PY-38919</a>.
+
+        For IDEs with Jupyter notebook support, there is also a execute cell command "Execute cell in console".
+
+        keyboard shortcut: <code>alt shift E</code>.
     ]]></description>
 
     <depends>com.intellij.modules.lang</depends>
@@ -47,6 +51,16 @@
       <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="control shift A" />
       <keyboard-shortcut keymap="Eclipse" first-keystroke="ctrl alt A" replace-all="true"/>
       <keyboard-shortcut keymap="NetBeans 6.5" first-keystroke="ctrl alt A" replace-all="true"/>
+    </action>
+    <action id="ExecuteCellInPyConsoleAction"
+      class="com.jetbrains.python.actions.PyCellExecuteAction"
+      text="Execute cell in console"
+      description="Executes cell in Python console">
+      <add-to-group group-id="EditorPopupMenu" anchor="before" relative-to-action="ExecuteInPyConsoleAction"/>
+
+      <keyboard-shortcut keymap="$default" first-keystroke="alt shift E"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="control shift E" />
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="control shift E" />
     </action>
   </actions>
 </idea-plugin>
