@@ -6,7 +6,7 @@
 <idea-plugin>
     <id>python-smart-execute</id>
     <name>Python Smart Execute</name>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
     <vendor email="zguoci@gmail.com" url="https://github.com/JetBrains/intellij-community/pull/711">Guo Ci Teo</vendor>
 
     <description><![CDATA[

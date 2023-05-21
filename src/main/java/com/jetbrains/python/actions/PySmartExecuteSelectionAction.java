@@ -164,6 +164,16 @@ public class PySmartExecuteSelectionAction extends AnAction {
     }
     if (codeToSend != null) {
       moveCaretDown(editor, numLinesToSubmit);
+      for(;;) {
+        final int currentOffset = DocumentUtil.getFirstNonSpaceCharOffset(document,
+            editor.getCaretModel().getLogicalPosition().line);
+        final PsiElement pe = psiFile.findElementAt(currentOffset);
+        if (pe != null && (pe.getNode().getElementType() == PyTokenTypes.END_OF_LINE_COMMENT
+            || pe.getNode() instanceof PsiWhiteSpace))
+          moveCaretDown(editor, 1);
+        else
+          break;
+      }
     } else {
       syntaxErrorAction(e);
       return;
