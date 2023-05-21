@@ -9,4 +9,12 @@ This is plugin implementation of the following PyCharm [pull request](https://gi
 
 JetBrains feature request: https://youtrack.jetbrains.com/issue/PY-38919
 
+New feature for 0.2.x:
+
+When editing Python code, execute a top level code block with "Execute cell in console".
+
+For IDEs with Jupyter notebook support, this executes a cell in the Python console.
+
+keyboard shortcut: <code>alt shift E</code>.
+
 ![demonstration](demo.gif "demonstration")

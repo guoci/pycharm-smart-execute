@@ -104,7 +104,7 @@ public class PySmartExecuteSelectionAction extends AnAction {
 //      editor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
 //    }
   }
-  private static void smartExecuteCode(final AnActionEvent e, final Editor editor) {
+  static void smartExecuteCode(final AnActionEvent e, final Editor editor) {
     final Document document = editor.getDocument();
     final PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(e.getProject());
     psiDocumentManager.commitDocument(document);

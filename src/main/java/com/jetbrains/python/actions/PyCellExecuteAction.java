@@ -32,6 +32,76 @@ import org.jetbrains.annotations.Nullable;
 
 public class PyCellExecuteAction extends AnAction {
 
+  private static boolean inJupyterNotebookMode(final AnActionEvent e, final Editor editor) {
+    // by checking for `JupyterTokenType.CODE_MARKER`
+    // but Jupyter is a closed sourced component, to workaround check if it is not `PyElementType` or `PsiWhiteSpace`
+    final Document document = editor.getDocument();
+    final PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(e.getProject());
+    psiDocumentManager.commitDocument(document);
+    final PsiFile psiFile = psiDocumentManager.getPsiFile(document);
+
+    final LogicalPosition logicalPos = editor.getCaretModel().getLogicalPosition();
+    final int line = logicalPos.line;
+    int start = 6666, end = 6666;
+    for (int i = 0; ; --i) {
+      final int cline = line + i;
+      int offset;
+      try {
+        offset = DocumentUtil.getFirstNonSpaceCharOffset(document, cline);
+        start = offset;
+      } catch (IndexOutOfBoundsException ex) {
+        break;
+      }
+      final PsiElement psiElement = psiFile.findElementAt(offset);
+      // System.out.println("i = " + i);
+      // System.out.println("cline = " + cline);
+      // System.out.println("psiElement = " + psiElement);
+      // System.out.println("psiElement.getNode() = " + psiElement.getNode());
+      if (psiElement == null)
+        break;
+      final var elementType = psiElement.getNode().getElementType();
+      // System.out.println("elementType = " + elementType);
+      if (!((elementType instanceof PyElementType) || (psiElement.getNode() instanceof PsiWhiteSpace)))
+        return true;
+    }
+    return false;
+  }
+  static void moveCaretVertical(final Editor editor, final int numLines) {
+    final LogicalPosition pos = editor.getCaretModel().getLogicalPosition();
+    editor.getCaretModel().moveToOffset(
+        editor.logicalPositionToOffset(
+            new LogicalPosition(pos.line + numLines, pos.column)));
+  }
+
+  private static void submitTopLevelCodeBlock(final AnActionEvent e, final Editor editor) {
+    final Document document = editor.getDocument();
+    final PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(e.getProject());
+    psiDocumentManager.commitDocument(document);
+    final PsiFile psiFile = psiDocumentManager.getPsiFile(document);
+
+    for (; ; ) {
+      final LogicalPosition logicalPos = editor.getCaretModel().getLogicalPosition();
+      final int firstNonSpaceCharOffset = DocumentUtil.getFirstNonSpaceCharOffset(document, logicalPos.line);
+      // System.out.println("firstNonSpaceCharOffset = " + firstNonSpaceCharOffset);
+      final int lineStartOffset = DocumentUtil.getLineStartOffset(firstNonSpaceCharOffset,
+          document);
+//       System.out.println("lineStartOffset = " + lineStartOffset);
+      if (lineStartOffset == firstNonSpaceCharOffset) {
+        final PsiElement pe = psiFile.findElementAt(lineStartOffset);
+//        System.out.println("pe.getTextOffset() = " + pe.getTextOffset());
+        if (pe.getTextOffset() == lineStartOffset) {
+          PySmartExecuteSelectionAction.smartExecuteCode(e, editor);
+          return;
+        }
+      }
+      try {
+        moveCaretVertical(editor, -1);
+      }catch(Exception ex){
+//        ex.printStackTrace();
+        throw ex;
+      }
+    }
+  }
   private static void cellExecute(final AnActionEvent e, final Editor editor) {
     final Document document = editor.getDocument();
     final PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(e.getProject());
@@ -52,16 +122,18 @@ public class PyCellExecuteAction extends AnAction {
         break;
       }
       final PsiElement psiElement = psiFile.findElementAt(offset);
+      // System.out.println("i = " + i);
+      // System.out.println("cline = " + cline);
+      // System.out.println("psiElement = " + psiElement);
+      // System.out.println("psiElement.getNode() = " + psiElement.getNode());
+      if (psiElement == null)
+        break;
       final var elementType = psiElement.getNode().getElementType();
-//      System.out.println("i = " + i);
-//      System.out.println("cline = " + cline);
-//      System.out.println("psiElement = " + psiElement);
-//      System.out.println("psiElement.getNode() = " + psiElement.getNode());
-//      System.out.println("elementType = " + elementType);
+      // System.out.println("elementType = " + elementType);
       if (!((elementType instanceof PyElementType) || (psiElement.getNode() instanceof PsiWhiteSpace)))
         break;
     }
-//    System.out.println("forward");
+    // System.out.println("forward==================");
     for (int i = 0; ; ++i) {
       final int cline = line + i;
       int offset;
@@ -72,12 +144,14 @@ public class PyCellExecuteAction extends AnAction {
         break;
       }
       final PsiElement psiElement = psiFile.findElementAt(offset);
+      // System.out.println("i = " + i);
+      // System.out.println("cline = " + cline);
+      // System.out.println("psiElement = " + psiElement);
+      if (psiElement == null)
+        break;
+      // System.out.println("psiElement.getNode() = " + psiElement.getNode());
       final var elementType = psiElement.getNode().getElementType();
-//      System.out.println("i = " + i);
-//      System.out.println("cline = " + cline);
-//      System.out.println("psiElement = " + psiElement);
-//      System.out.println("psiElement.getNode() = " + psiElement.getNode());
-//      System.out.println("elementType = " + elementType);
+      // System.out.println("elementType = " + elementType);
       if (!((elementType instanceof PyElementType) || (psiElement.getNode() instanceof PsiWhiteSpace)))
         break;
     }
@@ -85,7 +159,7 @@ public class PyCellExecuteAction extends AnAction {
       start = DocumentUtil.getLineEndOffset(start, document);
       end = DocumentUtil.getLineEndOffset(end, document);
       String codeToSend = editor.getDocument().getCharsSequence().subSequence(start, end).toString();
-//      System.out.println("codeToSend = " + codeToSend);
+      // System.out.println("codeToSend = " + codeToSend);
       PyExecuteInConsole.executeCodeInConsole(e.getProject(), codeToSend, null, true, true, false,
           null);
     }
@@ -100,7 +174,10 @@ public class PyCellExecuteAction extends AnAction {
         PyExecuteInConsole.executeCodeInConsole(e.getProject(), selectionText, null, true, true, false, null);
       }
       else {
-        cellExecute(e, editor);
+        if (inJupyterNotebookMode(e, editor))
+          cellExecute(e, editor);
+        else
+          submitTopLevelCodeBlock(e, editor);
       }
     }
   }
