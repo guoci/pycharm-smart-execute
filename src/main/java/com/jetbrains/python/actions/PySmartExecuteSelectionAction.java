@@ -164,7 +164,7 @@ public class PySmartExecuteSelectionAction extends AnAction {
     }
     if (codeToSend != null) {
       moveCaretDown(editor, numLinesToSubmit);
-      for(;;) {
+      for(;;) { // skip comments and whitespace
         final int currentOffset = DocumentUtil.getFirstNonSpaceCharOffset(document,
             editor.getCaretModel().getLogicalPosition().line);
         final PsiElement pe = psiFile.findElementAt(currentOffset);

@@ -34,7 +34,7 @@ public class PyCellExecuteAction extends AnAction {
 
   private static boolean inJupyterNotebookMode(final AnActionEvent e, final Editor editor) {
     // by checking for `JupyterTokenType.CODE_MARKER`
-    // but Jupyter is a closed sourced component, to workaround check if it is not `PyElementType` or `PsiWhiteSpace`
+    // but Pycharm's Jupyter mode is a closed sourced component, to workaround, check if it is not (`PyElementType` or `PsiWhiteSpace`)
     final Document document = editor.getDocument();
     final PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(e.getProject());
     psiDocumentManager.commitDocument(document);
