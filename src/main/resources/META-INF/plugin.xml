@@ -6,25 +6,31 @@
 <idea-plugin>
     <id>python-smart-execute</id>
     <name>Python Smart Execute</name>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
     <vendor email="zguoci@gmail.com" url="https://github.com/JetBrains/intellij-community/pull/711">Guo Ci Teo</vendor>
 
     <description><![CDATA[
-        Automatically determines the number of lines to be sent to the Python console. An alternative to “Execute Line in Console”.
-
-        keyboard shortcut: <code>alt shift A</code>.
-
-        A plugin implementation of the following PyCharm <a href="https://github.com/JetBrains/intellij-community/pull/711">pull request</a>.
-
-        JetBrains feature request: <a href="https://youtrack.jetbrains.com/issue/PY-38919">https://youtrack.jetbrains.com/issue/PY-38919</a>.
-
-        New feature for 0.2.x:
-
-        When editing Python code, execute a top level code block with "Execute cell in console".
-
-        For IDEs with Jupyter notebook support, this executes a cell in the Python console.
-
-        keyboard shortcut: <code>alt shift E</code>.
+<p>Automatically determines the code region to be sent to the Python console. An alternative to
+  “Execute Line in Console”.</p>
+<ul>
+  <li><code>Smart execute selection in console</code></li>
+  <p>Place cursor at first line of the code region to be executed.</p>
+  <p>keyboard shortcut: <code>Alt+Shift+A</code>,
+    action name: <code>Smart execute selection in console</code></p>
+  <p>A plugin implementation of the following PyCharm <a
+      href="https://github.com/JetBrains/intellij-community/pull/711">pull request</a>.</p>
+  <p>JetBrains feature request: <a href="https://youtrack.jetbrains.com/issue/PY-38919">https://youtrack.jetbrains.com/issue/PY-38919</a>.
+  </p>
+  <li><code>Execute cell in console</code></li>
+  <p><em>New feature for version 0.2.x</em></p>
+  <p>When editing Python code, execute a <em>top level</em> code block with "Execute cell in console". Cursor can be anywhere in the code block.</p>
+  <p>For IDEs with Jupyter notebook support, this executes a cell in the Python console.</p>
+  <p>keyboard shortcut: <code>Alt+Shift+E</code>,
+    action name: <code>Execute cell in console</code></p></p>
+  <p><code>Alt+Shift+E</code> conflicts with the default keyboard shortcut for <code>Execute
+    Selection
+    in Python Console</code>. Consider changing/removing their keybindings to resolve it.</p>
+</ul>
     ]]></description>
 
     <depends>com.intellij.modules.lang</depends>
