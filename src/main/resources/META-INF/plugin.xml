@@ -7,7 +7,7 @@
     <id>python-smart-execute</id>
     <name>Python Smart Execute</name>
     <version>0.3.0</version>
-    <vendor email="zguoci@gmail.com" url="https://github.com/JetBrains/intellij-community/pull/711">Guo Ci Teo</vendor>
+    <vendor email="zguoci@gmail.com" url="https://github.com/guoci">Guo Ci</vendor>
 
     <description><![CDATA[
 <p>Automatically determines the code region to be sent to the Python console. An alternative to
