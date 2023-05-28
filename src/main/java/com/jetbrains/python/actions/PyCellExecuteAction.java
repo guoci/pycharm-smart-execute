@@ -17,6 +17,7 @@ import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.DocumentUtil;
 import com.jetbrains.python.PyTokenTypes;
+import com.jetbrains.python.actions.PySmartExecuteSelectionAction.CursorMoveAfterExecute;
 import com.jetbrains.python.psi.PyElementType;
 import com.jetbrains.python.psi.PyElsePart;
 import com.jetbrains.python.psi.PyExceptPart;
@@ -32,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class PyCellExecuteAction extends AnAction {
 
-  private static boolean inJupyterNotebookMode(final AnActionEvent e, final Editor editor) {
+  static boolean inJupyterNotebookMode(final AnActionEvent e, final Editor editor) {
     // by checking for `JupyterTokenType.CODE_MARKER`
     // but Pycharm's Jupyter mode is a closed sourced component, to workaround, check if it is not (`PyElementType` or `PsiWhiteSpace`)
     final Document document = editor.getDocument();
@@ -73,12 +74,12 @@ public class PyCellExecuteAction extends AnAction {
             new LogicalPosition(pos.line + numLines, pos.column)));
   }
 
-  private static void submitTopLevelCodeBlock(final AnActionEvent e, final Editor editor) {
+  static void submitTopLevelCodeBlock(final AnActionEvent e, final Editor editor, CursorMoveAfterExecute cursorMoveAfterExecute) {
     final Document document = editor.getDocument();
     final PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(e.getProject());
     psiDocumentManager.commitDocument(document);
     final PsiFile psiFile = psiDocumentManager.getPsiFile(document);
-
+    final int currentLogicalPos = editor.getCaretModel().getOffset();
     for (; ; ) {
       final LogicalPosition logicalPos = editor.getCaretModel().getLogicalPosition();
       final int firstNonSpaceCharOffset = DocumentUtil.getFirstNonSpaceCharOffset(document, logicalPos.line);
@@ -90,7 +91,9 @@ public class PyCellExecuteAction extends AnAction {
         final PsiElement pe = psiFile.findElementAt(lineStartOffset);
 //        System.out.println("pe.getTextOffset() = " + pe.getTextOffset());
         if (pe.getTextOffset() == lineStartOffset) {
-          PySmartExecuteSelectionAction.smartExecuteCode(e, editor);
+          PySmartExecuteSelectionAction.smartExecuteCode(e, editor, cursorMoveAfterExecute);
+          if(cursorMoveAfterExecute==CursorMoveAfterExecute.NO_MOVE)
+            editor.getCaretModel().moveToOffset(currentLogicalPos);
           return;
         }
       }
@@ -102,7 +105,7 @@ public class PyCellExecuteAction extends AnAction {
       }
     }
   }
-  private static void cellExecute(final AnActionEvent e, final Editor editor) {
+  static void cellExecute(final AnActionEvent e, final Editor editor) {
     final Document document = editor.getDocument();
     final PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(e.getProject());
     psiDocumentManager.commitDocument(document);
@@ -177,7 +180,7 @@ public class PyCellExecuteAction extends AnAction {
         if (inJupyterNotebookMode(e, editor))
           cellExecute(e, editor);
         else
-          submitTopLevelCodeBlock(e, editor);
+          submitTopLevelCodeBlock(e, editor, CursorMoveAfterExecute.TO_NEXT_CODE_REGION);
       }
     }
   }

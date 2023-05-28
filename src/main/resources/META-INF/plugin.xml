@@ -6,7 +6,7 @@
 <idea-plugin>
     <id>python-smart-execute</id>
     <name>Python Smart Execute</name>
-    <version>0.2.2</version>
+    <version>0.3.0</version>
     <vendor email="zguoci@gmail.com" url="https://github.com/JetBrains/intellij-community/pull/711">Guo Ci Teo</vendor>
 
     <description><![CDATA[
@@ -22,7 +22,6 @@
   <p>JetBrains feature request: <a href="https://youtrack.jetbrains.com/issue/PY-38919">https://youtrack.jetbrains.com/issue/PY-38919</a>.
   </p>
   <li><code>Execute cell in console</code></li>
-  <p><em>New feature for version 0.2.x</em></p>
   <p>When editing Python code, execute a <em>top level</em> code block with "Execute cell in console". Cursor can be anywhere in the code block.</p>
   <p>For IDEs with Jupyter notebook support, this executes a cell in the Python console.</p>
   <p>keyboard shortcut: <code>Alt+Shift+E</code>,
@@ -30,6 +29,12 @@
   <p><code>Alt+Shift+E</code> conflicts with the default keyboard shortcut for <code>Execute
     Selection
     in Python Console</code>. Consider changing/removing their keybindings to resolve it.</p>
+  <li>Cursor movement after code is sent to the Python console</li>
+  <ul>
+    <li>do not move cursor</li>
+    <li>move to the end of the last code region sent</li>
+    <li>move to the next code region</li>
+  </ul>
 </ul>
     ]]></description>
 
@@ -52,8 +57,8 @@
   <actions>
     <action id="SmartExecuteInPyConsoleAction"
       class="com.jetbrains.python.actions.PySmartExecuteSelectionAction"
-      text="Smart execute selection in console"
-      description="Smart executes selected code fragment in Python/Django console">
+      text="Smart execute code in console, move to next code region"
+      description="Smart executes code fragment in Python console">
       <add-to-group group-id="EditorPopupMenu" anchor="before" relative-to-action="ExecuteInPyConsoleAction"/>
 
       <keyboard-shortcut keymap="$default" first-keystroke="alt shift A"/>
@@ -62,15 +67,39 @@
       <keyboard-shortcut keymap="Eclipse" first-keystroke="ctrl alt A" replace-all="true"/>
       <keyboard-shortcut keymap="NetBeans 6.5" first-keystroke="ctrl alt A" replace-all="true"/>
     </action>
+    <action id="SmartExecuteInPyConsoleActionCursorNoMove"
+      class="com.jetbrains.python.actions.PySmartExecuteSelectionActionCursorNoMove"
+      text="Smart execute code in console, cursor stays"
+      description="Smart executes code fragment in Python console">
+      <add-to-group group-id="EditorPopupMenu" anchor="before" relative-to-action="ExecuteInPyConsoleAction"/>
+    </action>
+    <action id="SmartExecuteInPyConsoleActionCursorToEnd"
+      class="com.jetbrains.python.actions.PySmartExecuteSelectionActionCursorToEnd"
+      text="Smart execute code in console, cursor move to last line submitted"
+      description="Smart executes code fragment in Python console">
+      <add-to-group group-id="EditorPopupMenu" anchor="before" relative-to-action="ExecuteInPyConsoleAction"/>
+    </action>
     <action id="ExecuteCellInPyConsoleAction"
       class="com.jetbrains.python.actions.PyCellExecuteAction"
-      text="Execute cell in console"
+      text="Execute cell in console, move to next code region"
       description="Executes cell in Python console">
       <add-to-group group-id="EditorPopupMenu" anchor="before" relative-to-action="ExecuteInPyConsoleAction"/>
 
       <keyboard-shortcut keymap="$default" first-keystroke="alt shift E"/>
       <keyboard-shortcut keymap="Mac OS X" first-keystroke="control shift E" />
       <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="control shift E" />
+    </action>
+    <action id="ExecuteCellInPyConsoleActionCursorNoMove"
+      class="com.jetbrains.python.actions.PyCellExecuteActionCursorNoMove"
+      text="Execute cell in console, cursor stays"
+      description="Executes cell in Python console">
+      <add-to-group group-id="EditorPopupMenu" anchor="before" relative-to-action="ExecuteInPyConsoleAction"/>
+    </action>
+    <action id="ExecuteCellInPyConsoleActionCursorToEnd"
+      class="com.jetbrains.python.actions.PyCellExecuteActionCursorToEnd"
+      text="Execute cell in console, cursor move to last line submitted"
+      description="Executes cell in Python console">
+      <add-to-group group-id="EditorPopupMenu" anchor="before" relative-to-action="ExecuteInPyConsoleAction"/>
     </action>
   </actions>
 </idea-plugin>

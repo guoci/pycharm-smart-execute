@@ -104,7 +104,11 @@ public class PySmartExecuteSelectionAction extends AnAction {
 //      editor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
 //    }
   }
-  static void smartExecuteCode(final AnActionEvent e, final Editor editor) {
+
+  enum CursorMoveAfterExecute {
+    NO_MOVE, TO_THE_END_OF_CODE_BLOCK, TO_NEXT_CODE_REGION;
+  }
+  static void smartExecuteCode(final AnActionEvent e, final Editor editor, final CursorMoveAfterExecute cursorMoveAfterExecute) {
     final Document document = editor.getDocument();
     final PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(e.getProject());
     psiDocumentManager.commitDocument(document);
@@ -163,16 +167,22 @@ public class PySmartExecuteSelectionAction extends AnAction {
       PyExecuteInConsole.executeCodeInConsole(e.getProject(), codeToSend, null, true, true, false, null);
     }
     if (codeToSend != null) {
-      moveCaretDown(editor, numLinesToSubmit);
-      for(;;) { // skip comments and whitespace
-        final int currentOffset = DocumentUtil.getFirstNonSpaceCharOffset(document,
-            editor.getCaretModel().getLogicalPosition().line);
-        final PsiElement pe = psiFile.findElementAt(currentOffset);
-        if (pe != null && (pe.getNode().getElementType() == PyTokenTypes.END_OF_LINE_COMMENT
-            || pe.getNode() instanceof PsiWhiteSpace))
-          moveCaretDown(editor, 1);
-        else
-          break;
+      if (cursorMoveAfterExecute == CursorMoveAfterExecute.TO_NEXT_CODE_REGION
+          || cursorMoveAfterExecute == CursorMoveAfterExecute.TO_THE_END_OF_CODE_BLOCK) {
+        moveCaretDown(editor, numLinesToSubmit);
+      }
+      if (cursorMoveAfterExecute == CursorMoveAfterExecute.TO_NEXT_CODE_REGION) {
+        for (; ; ) { // skip comments and whitespace
+          final int currentOffset = DocumentUtil.getFirstNonSpaceCharOffset(document,
+              editor.getCaretModel().getLogicalPosition().line);
+          final PsiElement pe = psiFile.findElementAt(currentOffset);
+          if (pe != null && (pe.getNode().getElementType() == PyTokenTypes.END_OF_LINE_COMMENT
+              || pe.getNode() instanceof PsiWhiteSpace)) {
+            moveCaretDown(editor, 1);
+          } else {
+            break;
+          }
+        }
       }
     } else {
       syntaxErrorAction(e);
@@ -201,7 +211,7 @@ public class PySmartExecuteSelectionAction extends AnAction {
         PyExecuteInConsole.executeCodeInConsole(e.getProject(), selectionText, null, true, true, false, null);
       }
       else {
-        smartExecuteCode(e, editor);
+        smartExecuteCode(e, editor, CursorMoveAfterExecute.TO_NEXT_CODE_REGION);
       }
     }
   }
