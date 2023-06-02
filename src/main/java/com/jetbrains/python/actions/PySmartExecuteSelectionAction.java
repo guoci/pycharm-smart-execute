@@ -172,9 +172,13 @@ public class PySmartExecuteSelectionAction extends AnAction {
         moveCaretDown(editor, numLinesToSubmit);
       }
       if (cursorMoveAfterExecute == CursorMoveAfterExecute.TO_NEXT_CODE_REGION) {
+        int currentOffset = 0;
         for (; ; ) { // skip comments and whitespace
-          final int currentOffset = DocumentUtil.getFirstNonSpaceCharOffset(document,
-              editor.getCaretModel().getLogicalPosition().line);
+          final int currentOffsetNew = DocumentUtil.getFirstNonSpaceCharOffset(document,
+                  editor.getCaretModel().getLogicalPosition().line);
+          if (currentOffset == currentOffsetNew)
+            break;
+          currentOffset = currentOffsetNew;
           final PsiElement pe = psiFile.findElementAt(currentOffset);
           if (pe != null && (pe.getNode().getElementType() == PyTokenTypes.END_OF_LINE_COMMENT
               || pe.getNode() instanceof PsiWhiteSpace)) {

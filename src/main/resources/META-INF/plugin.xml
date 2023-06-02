@@ -6,7 +6,7 @@
 <idea-plugin>
     <id>python-smart-execute</id>
     <name>Python Smart Execute</name>
-    <version>0.3.0</version>
+    <version>0.3.1</version>
     <vendor email="zguoci@gmail.com" url="https://github.com/guoci">Guo Ci</vendor>
 
     <description><![CDATA[
