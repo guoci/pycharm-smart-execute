@@ -1,6 +1,7 @@
 package com.jetbrains.python.actions;
 
 import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
@@ -8,6 +9,7 @@ import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.editor.ex.util.EditorUtil;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiDocumentManager;
@@ -169,7 +171,17 @@ public class PySmartExecuteSelectionAction extends AnAction {
     if (codeToSend != null) {
       if (cursorMoveAfterExecute == CursorMoveAfterExecute.TO_NEXT_CODE_REGION
           || cursorMoveAfterExecute == CursorMoveAfterExecute.TO_THE_END_OF_CODE_BLOCK) {
+        final LogicalPosition posStart = editor.getCaretModel().getLogicalPosition();
         moveCaretDown(editor, numLinesToSubmit);
+        final LogicalPosition posEnd = editor.getCaretModel().getLogicalPosition();
+        if (posStart.line + numLinesToSubmit != posEnd.line) { // if lines moved less than lines submitted, insert newline
+          // https://plugins.jetbrains.com/docs/intellij/working-with-text.html
+          Project project = e.getRequiredData(CommonDataKeys.PROJECT);
+          Document doc = editor.getDocument();
+          WriteCommandAction.runWriteCommandAction(project,
+              () -> doc.insertString(editor.logicalPositionToOffset(posEnd), "\n"));
+          moveCaretDown(editor, 1);
+        }
       }
       if (cursorMoveAfterExecute == CursorMoveAfterExecute.TO_NEXT_CODE_REGION) {
         int currentOffset = 0;
